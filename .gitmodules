@@ -1,0 +1,3 @@
+[submodule "ThirdParty/embedded_lib"]
+	path = ThirdParty/embedded_lib
+	url = git@github.com:One2INF/embedded_lib.git
