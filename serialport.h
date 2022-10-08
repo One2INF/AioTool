@@ -11,6 +11,7 @@ typedef struct
   qint32 baudrate;
 }SERIALPORT_INFO_ST;
 
+
 class serialport : public QThread
 {
   Q_OBJECT
@@ -20,8 +21,10 @@ public:
   ~serialport(void);
   void init(SERIALPORT_INFO_ST *serialport_info);
   void run(void);
-  void stop(void);
 
 private:
-  QSerialPort SerialPort;
+  SERIALPORT_INFO_ST SerialportInfo;
+  bool QuitFlag = false;
+
+  void stop(void);
 };
