@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QtSerialPort/QSerialPortInfo>
 
-#include "serialport.h"
+#include "transmitter.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  serialport serialport;
-  serialport.init(&serialport_info);
-  serialport.start();
+  transmitter transmitter;
+  transmitter.init(&serialport_info);
+  transmitter.start();
 
   return a.exec();
 }

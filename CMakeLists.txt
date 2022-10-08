@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(AioTool VERSION 0.1 LANGUAGES CXX)
+project(AioTool VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -10,6 +10,8 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
@@ -19,39 +21,20 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        serialport.cpp
-        serialport.h
+        transmitter.cpp
+        transmitter.h
 )
 
-file(GLOB EMBEDDED_LIB "ThirdParty/embedded_lib/*.c")
+file(GLOB EMBEDDED_LIB "ThirdParty/embedded_lib/ymodem.*")
 
 include_directories(
         ThirdParty/embedded_lib
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(AioTool
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET AioTool APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(AioTool SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(AioTool
-            ${PROJECT_SOURCES}
-            ${EMBEDDED_LIB}
-        )
-    endif()
-endif()
+add_executable(AioTool
+    ${PROJECT_SOURCES}
+    ${EMBEDDED_LIB}
+)
 
 target_link_libraries(AioTool PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort)
 
