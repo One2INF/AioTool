@@ -6,6 +6,10 @@
 
 #include "transmitter.h"
 
+
+QSerialPort transmitter::SerialPort;
+
+
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
@@ -29,5 +33,6 @@ int main(int argc, char *argv[])
   transmitter.init(&serialport_info);
   transmitter.start();
 
+  setbuf(stdout, NULL);
   return a.exec();
 }
