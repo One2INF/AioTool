@@ -22,13 +22,16 @@ size_t transmitter::Read_Block(uint8_t *data, size_t size, uint32_t timeout)
   QByteArray responseData;
   if(SerialPort.waitForReadyRead(timeout))
   {
-    responseData = SerialPort.readAll();
-    while(SerialPort.waitForReadyRead(100))
+    do
+    {
       responseData += SerialPort.readAll();
+    }
+    while(SerialPort.waitForReadyRead(10) || SerialPort.bytesAvailable());
 
     qDebug() << "read: " << QString::fromUtf8(responseData.toHex());
+    memcpy(data, responseData.data(), responseData.size());
   }
-  memcpy(data, responseData.data(), responseData.size());
+
   return responseData.size();
 }
 
@@ -41,9 +44,6 @@ size_t transmitter::Write(uint8_t *data, size_t size)
 
 YMODEM_STATUS_EN transmitter::receive_data_handler(uint8_t *data, size_t size)
 {
-  //QByteArray bytedata = QByteArray((const char*)data, size);
-  //qDebug() << "data_handle: " << QString::fromUtf8(bytedata.toHex());
-
   return YMODEM_OK;
 }
 
