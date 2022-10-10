@@ -47,10 +47,12 @@ YMODEM_STATUS_EN transmitter::receive_data_handler(uint8_t *data, size_t size)
   return YMODEM_OK;
 }
 
-void transmitter::init(SERIALPORT_INFO_ST *serialport_info)
+void transmitter::init(SERIALPORT_INFO_ST *serialport_info, FILE_INFO_ST *file_info)
 {
   SerialportInfo = *serialport_info;
   SerialPort.moveToThread(this);
+
+  FileInfo = *file_info;
 
   YMODE_DRIVER_ST YmodemDriver;
   YmodemDriver.read_block = Read_Block;
@@ -67,7 +69,6 @@ void transmitter::run(void)
     return;
   }
 
-  FILE_INFO_ST file_info;
   while(!QuitFlag)
   {
     if(!SerialPort.isOpen())
@@ -76,7 +77,23 @@ void transmitter::run(void)
       continue;
     }
 
-    ReceiveFile(&Ymodem, &file_info);
+    //ReceiveFile(&Ymodem, &file_info);
+
+    QFile file(FileInfo.name);
+    if(file.open(QIODevice::ReadOnly))
+    {
+      FileInfo.size = file.size();
+      qDebug() << FileInfo.name << FileInfo.size;
+      QByteArray data = file.readAll();
+      SendFile(&Ymodem, &FileInfo, (uint8_t*)data.constData(), file.size());
+
+      file.close();
+
+      SerialPort.write("\r", 1);
+      SerialPort.waitForBytesWritten(1000);
+      break;
+    }
+
   }
 
   if(SerialPort.isOpen())

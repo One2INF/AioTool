@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 
 #include "transmitter.h"
+#include "ymodem.h"
 
 
 QSerialPort transmitter::SerialPort;
@@ -17,11 +18,13 @@ int main(int argc, char *argv[])
   w.show();
 
   SERIALPORT_INFO_ST serialport_info;
+  FILE_INFO_ST file_info;
 
-  if(argc == 3)
+  if(argc == 4)
   {
     serialport_info.portname = (QString)argv[1];
     serialport_info.baudrate = ((QString)argv[2]).toInt();
+    strncpy(file_info.name, argv[3], sizeof(file_info.name));
   }
   else
   {
@@ -30,7 +33,7 @@ int main(int argc, char *argv[])
   }
 
   transmitter transmitter;
-  transmitter.init(&serialport_info);
+  transmitter.init(&serialport_info, &file_info);
   transmitter.start();
 
   setbuf(stdout, NULL);

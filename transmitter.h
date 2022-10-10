@@ -21,7 +21,7 @@ class transmitter : public QThread
 public:
   transmitter(QObject *parent = nullptr);
   ~transmitter(void);
-  void init(SERIALPORT_INFO_ST *serialport_info);
+  void init(SERIALPORT_INFO_ST *serialport_info, FILE_INFO_ST *file_info);
   void run(void);
   static size_t Read_Block(uint8_t *data, size_t size, uint32_t timeout);
   static size_t Write(uint8_t *data, size_t size);
@@ -30,6 +30,7 @@ public:
 
 private:
   SERIALPORT_INFO_ST SerialportInfo;
+  FILE_INFO_ST FileInfo;
   YMODEM_HANDLER Ymodem;
   bool QuitFlag = false;
 
