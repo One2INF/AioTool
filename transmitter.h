@@ -28,6 +28,9 @@ public:
   static YMODEM_STATUS_EN receive_data_handler(uint8_t *data, size_t size);
   static QSerialPort SerialPort;
 
+signals:
+  void UpdateText(QString text);
+
 private:
   SERIALPORT_INFO_ST SerialportInfo;
   FILE_INFO_ST FileInfo;

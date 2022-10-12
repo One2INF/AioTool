@@ -14,6 +14,7 @@ transmitter::transmitter(QObject *parent) : QThread(parent)
 transmitter::~transmitter(void)
 {
   stop();
+  terminate();
   wait();
 }
 
@@ -85,7 +86,13 @@ void transmitter::run(void)
       FileInfo.size = file.size();
       qDebug() << FileInfo.name << FileInfo.size;
       QByteArray data = file.readAll();
-      SendFile(&Ymodem, &FileInfo, (uint8_t*)data.constData(), file.size());
+
+      for(uint32_t i = 1; i <= 1000; ++i)
+      {
+        SendFile(&Ymodem, &FileInfo, (uint8_t*)data.constData(), file.size());
+        emit UpdateText(QString::number(i));
+        sleep(10);
+      }
 
       file.close();
 

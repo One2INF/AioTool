@@ -16,6 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void TexteditUpdateCount(QString text);
+
 private:
     Ui::MainWindow *ui;
 };

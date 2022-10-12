@@ -36,6 +36,8 @@ int main(int argc, char *argv[])
   transmitter.init(&serialport_info, &file_info);
   transmitter.start();
 
+  QObject::connect(&transmitter, &transmitter::UpdateText, &w, &MainWindow::TexteditUpdateCount);
+
   setbuf(stdout, NULL);
   return a.exec();
 }
