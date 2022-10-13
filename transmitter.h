@@ -24,8 +24,8 @@ public:
   void init(SERIALPORT_INFO_ST *serialport_info, FILE_INFO_ST *file_info);
   void run(void);
   static size_t Read_Block(uint8_t *data, size_t size, uint32_t timeout);
-  static size_t Write(uint8_t *data, size_t size);
-  static YMODEM_STATUS_EN receive_data_handler(uint8_t *data, size_t size);
+  static size_t Write(const uint8_t *data, size_t size);
+  static YMODEM_STATUS_EN receive_data_handler(size_t packet_offset, const uint8_t *data, size_t size);
   static QSerialPort SerialPort;
 
 signals:

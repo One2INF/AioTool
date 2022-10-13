@@ -36,14 +36,14 @@ size_t transmitter::Read_Block(uint8_t *data, size_t size, uint32_t timeout)
   return responseData.size();
 }
 
-size_t transmitter::Write(uint8_t *data, size_t size)
+size_t transmitter::Write(const uint8_t *data, size_t size)
 {
   QByteArray bytedata = QByteArray((const char*)data, size);
   qDebug() << "write: " << QString::fromUtf8(bytedata.toHex());
   return SerialPort.write((char *)data, size);
 }
 
-YMODEM_STATUS_EN transmitter::receive_data_handler(uint8_t *data, size_t size)
+YMODEM_STATUS_EN transmitter::receive_data_handler(size_t packet_offset, const uint8_t *data, size_t size)
 {
   return YMODEM_OK;
 }
@@ -87,17 +87,37 @@ void transmitter::run(void)
       qDebug() << FileInfo.name << FileInfo.size;
       QByteArray data = file.readAll();
 
-      for(uint32_t i = 1; i <= 1000; ++i)
+      uint32_t TotalCount = 0;
+      uint32_t SuccessCount = 0;
+      uint32_t ErrorCount = 0;
+      QString Ret;
+      for(;;)
       {
-        SendFile(&Ymodem, &FileInfo, (uint8_t*)data.constData(), file.size());
-        emit UpdateText(QString::number(i));
-        sleep(10);
+        ++TotalCount;
+        if(YMODEM_OK == YMODEM_SendFile(&Ymodem, &FileInfo, (uint8_t*)data.constData(), file.size()))
+        {
+          ++SuccessCount;
+          Ret = "Successful";
+        }
+        else
+        {
+          ++ErrorCount;
+          Ret = "Failed";
+        }
+        QString text = QString("%1: ").arg(TotalCount) + Ret +
+                      QString(", S: %1: E: %2").arg(SuccessCount).arg(ErrorCount);
+        emit UpdateText(text);
       }
 
       file.close();
 
       SerialPort.write("\r", 1);
       SerialPort.waitForBytesWritten(1000);
+      break;
+    }
+    else
+    {
+      qDebug() << file.errorString();
       break;
     }
 
