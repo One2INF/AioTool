@@ -17,9 +17,12 @@ public:
     ~MainWindow();
 
 public slots:
-    void TexteditUpdateCount(QString text);
+    void slotNewSession(void);
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void slotCloseTabwidgetPage(int index);
 };
 #endif // MAINWINDOW_H

@@ -3,20 +3,39 @@
 
 #include <QDebug>
 
+#include "newsessiondialog.h"
+#include "serialportassistant.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
+
+  connect(ui->actionNewSession, &QAction::triggered,
+          this, &MainWindow::slotNewSession);
+
+  connect(ui->tabWidget, &QTabWidget::tabCloseRequested,
+          this, &MainWindow::slotCloseTabwidgetPage);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+  delete ui;
 }
 
-void MainWindow::TexteditUpdateCount(QString text)
+void MainWindow::slotNewSession(void)
 {
-  ui->plainTextEdit->appendPlainText(text);
+  NewSessionDialog NewSession;
+  if(QDialog::Accepted == NewSession.exec())
+  {
+    ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
+  }
 }
+
+void MainWindow::slotCloseTabwidgetPage(int index)
+{
+  ui->tabWidget->removeTab(index);
+}
+
+

@@ -13,8 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-#add_compile_options(-Wno-pmf-conversions)
-
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
 
@@ -23,8 +21,16 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        NewSessionWizard.ui
         transmitter.cpp
         transmitter.h
+        newsessiondialog.cpp
+        newsessiondialog.h
+        SerialportAssistant.cpp
+        SerialportAssistant.h
+        SerialportAssistant.ui
+        comboboxext.cpp
+        comboboxext.h
 )
 
 file(GLOB EMBEDDED_LIB "ThirdParty/embedded_lib/ymodem.*")
