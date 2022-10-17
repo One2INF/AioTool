@@ -30,6 +30,7 @@ void MainWindow::slotNewSession(void)
   if(QDialog::Accepted == NewSession.exec())
   {
     ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
+    ui->statusbar->showMessage("session type: " + NewSession.SessionType());
   }
 }
 

@@ -7,23 +7,130 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="2" column="1" rowspan="2" colspan="2">
+   <item row="8" column="2">
+    <widget class="QPushButton" name="pushButton_ClearSend">
+     <property name="text">
+      <string>清除发送</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
     <widget class="QPlainTextEdit" name="plainTextEdit_Send"/>
    </item>
+   <item row="8" column="1">
+    <widget class="QPushButton" name="pushButton_Send">
+     <property name="text">
+      <string>发送</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QTextBrowser" name="textBrowser"/>
+   </item>
    <item row="1" column="2">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="8" column="1">
-      <widget class="QPushButton" name="pushButton_ClearReceive">
+    <layout class="QGridLayout" name="gridLayout" columnminimumwidth="10,10">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="horizontalSpacing">
+      <number>4</number>
+     </property>
+     <item row="8" column="0">
+      <widget class="QPushButton" name="pushButton_Save">
        <property name="text">
-        <string>清除接收</string>
+        <string>保存窗口</string>
        </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>流控</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="comboBox_Baudrate">
+       <item>
+        <property name="text">
+         <string>115200</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>数据位</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="comboBox_StopBit">
+       <item>
+        <property name="text">
+         <string>1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1.5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>波特率</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="ComboBoxExt" name="comboBox_Port"/>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="comboBox_CheckBit">
+       <item>
+        <property name="text">
+         <string>无</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>奇</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>偶</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="3" column="1">
@@ -50,13 +157,6 @@
        </item>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>校验位</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -64,101 +164,11 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0" colspan="2">
-      <widget class="QPushButton" name="pushButton_OpenPort">
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>打开串口</string>
+        <string>校验位</string>
        </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <property name="autoExclusive">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0" colspan="2">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>波特率</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QPushButton" name="pushButton_Save">
-       <property name="text">
-        <string>保存窗口</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="comboBox_StopBit">
-       <item>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>1.5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>2</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>数据位</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="ComboBoxExt" name="comboBox_Port"/>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="comboBox_CheckBit">
-       <item>
-        <property name="text">
-         <string>无</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>奇</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>偶</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="comboBox_Baudrate">
-       <item>
-        <property name="text">
-         <string>115200</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="6" column="1">
@@ -180,31 +190,27 @@
        </item>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_2">
+     <item row="7" column="0" colspan="2">
+      <widget class="QPushButton" name="pushButton_OpenPort">
        <property name="text">
-        <string>流控</string>
+        <string>打开串口</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QPushButton" name="pushButton_ClearReceive">
+       <property name="text">
+        <string>清除接收</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPlainTextEdit" name="plainTextEdit_Receive"/>
-   </item>
-   <item row="7" column="2">
-    <widget class="QPushButton" name="pushButton_ClearSend">
-     <property name="text">
-      <string>清除发送</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QPushButton" name="pushButton_Send">
-     <property name="text">
-      <string>发送</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

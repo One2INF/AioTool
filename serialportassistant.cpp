@@ -13,6 +13,7 @@ SerialportAssistant::SerialportAssistant(QStatusBar *status_bar, QWidget *parent
   ui->setupUi(this);
 
   statusbar = status_bar;
+
   SignalSlotConnect();
   slotUpdateSerialList();
 }
@@ -52,8 +53,8 @@ void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
 
 bool SerialportAssistant::OpenPort(void)
 {
-  SerialPort.setPortName(ui->comboBox_Port->currentText());
-  SerialPort.setBaudRate(ui->comboBox_Baudrate->currentData().toInt());
+  SerialPort.setPortName(ui->comboBox_Port->currentText().split(": ")[0]);
+  SerialPort.setBaudRate(ui->comboBox_Baudrate->currentText().toLong());
 
   QSerialPort::StopBits StopBits = QSerialPort::OneStop;
   if(1.5 == ui->comboBox_StopBit->currentData())
@@ -88,6 +89,9 @@ bool SerialportAssistant::OpenPort(void)
   }
   SerialPort.setFlowControl(FlowControl);
 
+  qDebug() << SerialPort.baudRate() << SerialPort.stopBits()
+           << SerialPort.parity() << SerialPort.flowControl();
+
   if(SerialPort.open(QIODevice::ReadWrite))
   {
     statusbar->showMessage("open " + SerialPort.portName() + " succeed!");
@@ -111,7 +115,7 @@ void SerialportAssistant::slotUpdateSerialList(void)
 
 void SerialportAssistant::UpdateReceiveTexteditor(QString text)
 {
-
+  ui->textBrowser->insertPlainText(text);
 }
 
 void SerialportAssistant::slotReadData(void)
