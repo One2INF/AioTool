@@ -13,29 +13,19 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="8" column="2">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="3,1,0">
+   <item row="1" column="0" colspan="2">
+    <widget class="QPlainTextEdit" name="plainTextEdit_Send"/>
+   </item>
+   <item row="2" column="1">
     <widget class="QPushButton" name="pushButton_ClearSend">
      <property name="text">
       <string>清除发送</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QPlainTextEdit" name="plainTextEdit_Send"/>
-   </item>
-   <item row="8" column="1">
-    <widget class="QPushButton" name="pushButton_Send">
-     <property name="text">
-      <string>发送</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QTextBrowser" name="textBrowser"/>
-   </item>
-   <item row="1" column="2">
-    <layout class="QGridLayout" name="gridLayout" columnminimumwidth="10,10">
+   <item row="0" column="1">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0" columnminimumwidth="0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
@@ -192,6 +182,9 @@
      </item>
      <item row="7" column="0" colspan="2">
       <widget class="QPushButton" name="pushButton_OpenPort">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>打开串口</string>
        </property>
@@ -211,6 +204,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButton_Send">
+     <property name="text">
+      <string>发送</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTextBrowser" name="textBrowser"/>
    </item>
   </layout>
  </widget>

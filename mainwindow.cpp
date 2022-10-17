@@ -29,14 +29,16 @@ void MainWindow::slotNewSession(void)
   NewSessionDialog NewSession;
   if(QDialog::Accepted == NewSession.exec())
   {
-    ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
+    int index = ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
+    ui->tabWidget->setCurrentIndex(index);
+
     ui->statusbar->showMessage("session type: " + NewSession.SessionType());
   }
 }
 
 void MainWindow::slotCloseTabwidgetPage(int index)
 {
-  ui->tabWidget->removeTab(index);
+  delete ui->tabWidget->widget(index);
 }
 
 

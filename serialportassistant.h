@@ -36,6 +36,9 @@ private slots:
   void slotOpenPortButtonClicked(bool flag);
   void slotUpdateSerialList(void);
   void slotReadData(void);
+  void slotSendData(void);
+  void slotClearReceivedData(void);
+  void slotClearSendData(void);
 };
 
 #endif // SERIALPORTASSISTANT_H
