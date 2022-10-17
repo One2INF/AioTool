@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include <QDebug>
+#include <QMessageBox>
 
 #include "newsessiondialog.h"
 #include "serialportassistant.h"
@@ -14,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->actionNewSession, &QAction::triggered,
           this, &MainWindow::slotNewSession);
+
+  connect(ui->actionAboutMe, &QAction::triggered,
+          this, &MainWindow::slotAboutMe);
 
   connect(ui->tabWidget, &QTabWidget::tabCloseRequested,
           this, &MainWindow::slotCloseTabwidgetPage);
@@ -41,4 +45,13 @@ void MainWindow::slotCloseTabwidgetPage(int index)
   delete ui->tabWidget->widget(index);
 }
 
+void MainWindow::slotAboutMe(void)
+{
+  QString msgAuthor = QString("Author: One2INF<p>");
+  QString msgGitee = QString("Gitee: <a href=https://gitee.com/One2INF>https://gitee.com/One2INF</a><p>");
+  QString msgGithub = QString("Github: <a href=https://github.com/One2INF>https://github.com/One2INF</a><p>");
+  QString msgEmail = QString("Email: <a href=mailto: 1871750676@qq.com>1871750676@qq.com</a><p>");
+  QString msg = msgAuthor + msgGitee + msgEmail;
 
+  QMessageBox::about(nullptr, "About Me", msg);
+}

@@ -10,19 +10,20 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+  MainWindow(QWidget *parent = nullptr);
+  ~MainWindow();
 
 public slots:
-    void slotNewSession(void);
+  void slotNewSession(void);
+  void slotAboutMe(void);
 
 private:
-    Ui::MainWindow *ui;
+   Ui::MainWindow *ui;
 
 private slots:
-    void slotCloseTabwidgetPage(int index);
+  void slotCloseTabwidgetPage(int index);
 };
 #endif // MAINWINDOW_H

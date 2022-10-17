@@ -52,7 +52,14 @@
     <addaction name="actionNewSession"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAboutMe"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNewSession">
@@ -62,6 +69,11 @@
    </property>
    <property name="text">
     <string>New Session</string>
+   </property>
+  </action>
+  <action name="actionAboutMe">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>
