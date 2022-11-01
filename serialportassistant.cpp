@@ -3,6 +3,7 @@
 
 #include <QAbstractItemView>
 #include <QSerialPortInfo>
+#include <QTimer>
 #include <QDebug>
 
 
@@ -24,7 +25,7 @@ SerialportAssistant::SerialportAssistant(QStatusBar *status_bar, QWidget *parent
 SerialportAssistant::~SerialportAssistant()
 {
   delete ui;
-qDebug() << "SerialportAssistant destruction";
+
   if(SerialPort.isOpen())
   {
     SerialPort.close();
@@ -50,6 +51,8 @@ void SerialportAssistant::SignalSlotConnect(void)
   /* 串口类 */
   connect(&SerialPort, &QSerialPort::readyRead,
           this, &SerialportAssistant::slotReadData);
+
+  connect(&timer, &QTimer::timeout, this, &SerialportAssistant::slotUpdateReceiveTexteditor);
 }
 
 void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
@@ -121,29 +124,29 @@ void SerialportAssistant::slotUpdateSerialList(void)
 {
   ui->comboBox_Port->clear();
   foreach(const QSerialPortInfo &Info, QSerialPortInfo::availablePorts())
-  {
     ui->comboBox_Port->addItem(Info.portName() + ": " + Info.description());
-  }
 }
 
-void SerialportAssistant::UpdateReceiveTexteditor(QString text)
+void SerialportAssistant::slotUpdateReceiveTexteditor(void)
 {
-  ui->textBrowser->insertPlainText(text);
   ui->textBrowser->moveCursor(QTextCursor::End);
+  ui->textBrowser->insertPlainText(QString::fromUtf8(recv_data));
+
+  /* 准备下次接收数据 */
+  timer.stop();
+  recv_data.clear();
 }
 
 void SerialportAssistant::slotReadData(void)
 {
-  QByteArray data = SerialPort.readAll();
-  UpdateReceiveTexteditor(QString::fromUtf8(data));
+  recv_data += SerialPort.readAll();
+  timer.start(5);
 }
 
 void SerialportAssistant::slotSendData(void)
 {
   if(SerialPort.isOpen())
-  {
-    SerialPort.write(ui->plainTextEdit_Send->toPlainText().toLocal8Bit());
-  }
+    SerialPort.write(ui->plainTextEdit_Send->toPlainText().toUtf8());
 }
 
 void SerialportAssistant::slotClearReceivedData(void)

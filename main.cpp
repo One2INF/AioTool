@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QtSerialPort/QSerialPortInfo>
+#include <QTextCodec>
 
 #include "transmitter.h"
 
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
   MainWindow w;
   w.setWindowTitle("AioTool - One2INF");
   w.show();
+
+  QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 
   setbuf(stdout, NULL);
   return a.exec();

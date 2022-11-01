@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSerialPort>
 #include <QStatusBar>
+#include <QTimer>
 
 
 namespace Ui {
@@ -25,11 +26,13 @@ private:
   QSerialPort SerialPort;
   Ui::SerialportAssistant *ui;
 
+  QTimer timer;
+  QByteArray recv_data;
+
   /* 串口操作函数 */
   bool OpenPort(void);
 
   void SignalSlotConnect(void);
-  void UpdateReceiveTexteditor(QString text);
 
 private slots:
 
@@ -37,6 +40,7 @@ private slots:
   void slotUpdateSerialList(void);
   void slotReadData(void);
   void slotSendData(void);
+  void slotUpdateReceiveTexteditor(void);
   void slotClearReceivedData(void);
   void slotClearSendData(void);
 };
