@@ -60,6 +60,8 @@ void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
   if(SerialPort.isOpen())
   {
     SerialPort.close();
+    ui->pushButton_OpenPort->setText("打开串口");
+    ui->pushButton_OpenPort->setStyleSheet("background-color:none");
     statusbar->showMessage("close " + SerialPort.portName() + ".");
     return;
   }
@@ -67,6 +69,8 @@ void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
   if(OpenPort())
   {
     ui->pushButton_OpenPort->setChecked(true);
+    ui->pushButton_OpenPort->setText("关闭串口");
+    ui->pushButton_OpenPort->setStyleSheet("background-color:red");
     statusbar->showMessage("open " + SerialPort.portName() + " succeed.");
   }
   else
@@ -82,11 +86,11 @@ bool SerialportAssistant::OpenPort(void)
   SerialPort.setBaudRate(ui->comboBox_Baudrate->currentText().toLong());
 
   QSerialPort::StopBits StopBits = QSerialPort::OneStop;
-  if(1.5 == ui->comboBox_StopBit->currentData())
+  if(1.5 == ui->comboBox_StopBit->currentText().toFloat())
   {
     StopBits = QSerialPort::OneAndHalfStop;
   }
-  else if(2 == ui->comboBox_StopBit->currentData())
+  else if(2 == ui->comboBox_StopBit->currentText().toFloat())
   {
     StopBits = QSerialPort::TwoStop;
   }

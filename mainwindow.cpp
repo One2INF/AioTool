@@ -8,10 +8,11 @@
 #include "serialportassistant.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+
+  ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
 
   connect(ui->actionNewSession, &QAction::triggered,
           this, &MainWindow::slotNewSession);
