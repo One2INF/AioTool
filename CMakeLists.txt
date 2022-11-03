@@ -16,32 +16,27 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
 
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        NewSessionWizard.ui
-        transmitter.cpp
-        transmitter.h
-        newsessiondialog.cpp
-        newsessiondialog.h
-        SerialportAssistant.cpp
-        SerialportAssistant.h
-        SerialportAssistant.ui
-        comboboxext.cpp
-        comboboxext.h
-)
 
+file(GLOB PROJECT_SOURCES "*.cpp" "*.h" "*.ui")
+file(GLOB CUSTOM_WIDGET "CustomWidget/*")
+file(GLOB SESSIONS "Sessions/*")
+file(GLOB TOOLS "Tools/ymodem/*")
 file(GLOB EMBEDDED_LIB "ThirdParty/embedded_lib/ymodem.*")
 
 include_directories(
-        ThirdParty/embedded_lib
+  .
+  ThirdParty/embedded_lib
+  CustomWidget
+  Sessions
+  Tools/ymodem
 )
 
 add_executable(AioTool
-    ${PROJECT_SOURCES}
-    ${EMBEDDED_LIB}
+  ${PROJECT_SOURCES}
+  ${CUSTOM_WIDGET}
+  ${SESSIONS}
+  ${TOOLS}
+  ${EMBEDDED_LIB}
 )
 
 target_link_libraries(AioTool PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort)

@@ -58,7 +58,15 @@
     </property>
     <addaction name="actionAboutMe"/>
    </widget>
+   <widget class="QMenu" name="menutools">
+    <property name="title">
+     <string>tools</string>
+    </property>
+    <addaction name="actionYmodem"/>
+    <addaction name="actionSerialPlot"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menutools"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -74,6 +82,16 @@
   <action name="actionAboutMe">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionYmodem">
+   <property name="text">
+    <string>Ymodem</string>
+   </property>
+  </action>
+  <action name="actionSerialPlot">
+   <property name="text">
+    <string>SerialPlot</string>
    </property>
   </action>
  </widget>
