@@ -18,8 +18,6 @@ SerialportAssistant::SerialportAssistant(QStatusBar *status_bar, QWidget *parent
   /* 设置按钮不自复位 */
   ui->pushButton_OpenPort->setCheckable(true);
 
-  WriteTimer.start(10);
-
   SignalSlotConnect();
   slotUpdateSerialList();
 }
@@ -28,10 +26,10 @@ SerialportAssistant::~SerialportAssistant()
 {
   delete ui;
 
-  if(SerialPort.isOpen())
+  if(SerialportThread.isOpen())
   {
-    SerialPort.close();
-    statusbar->showMessage("close " + SerialPort.portName() + ".");
+    SerialportThread.close();
+    statusbar->showMessage("close " + ui->comboBox_Port->currentText() + ".");
   }
 }
 
@@ -46,26 +44,22 @@ void SerialportAssistant::SignalSlotConnect(void)
   connect(ui->pushButton_ClearReceive, &QPushButton::clicked,
           this, &SerialportAssistant::slotClearReceivedData);
   connect(ui->pushButton_Send, &QPushButton::clicked,
-          this, &SerialportAssistant::slotSendData);
+          this, &SerialportAssistant::slotSendInputBoxData);
   connect(ui->pushButton_ClearSend, &QPushButton::clicked,
-          this, &SerialportAssistant::slotClearSendData);
+          this, &SerialportAssistant::slotClearInputBoxData);
 
-  /* 串口类 */
-  connect(&SerialPort, &QSerialPort::readyRead,
-          this, &SerialportAssistant::slotReadData);
-
-  connect(&ReadTimer, &QTimer::timeout, this, &SerialportAssistant::slotUpdateReceiveTexteditor);
-  connect(&WriteTimer, &QTimer::timeout, this, &SerialportAssistant::slotWriteData);
+  connect(&SerialportThread, &serialportthread::signalReadyRead,
+          this, &SerialportAssistant::slotUpdateReceiveTexteditor);
 }
 
 void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
 {
-  if(SerialPort.isOpen())
+  if(SerialportThread.isOpen())
   {
-    SerialPort.close();
+    SerialportThread.close();
     ui->pushButton_OpenPort->setText("打开串口");
     ui->pushButton_OpenPort->setStyleSheet("background-color:none");
-    statusbar->showMessage("close " + SerialPort.portName() + ".");
+    statusbar->showMessage("close " + ui->comboBox_Port->currentText() + ".");
     return;
   }
 
@@ -74,19 +68,21 @@ void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
     ui->pushButton_OpenPort->setChecked(true);
     ui->pushButton_OpenPort->setText("关闭串口");
     ui->pushButton_OpenPort->setStyleSheet("background-color:red");
-    statusbar->showMessage("open " + SerialPort.portName() + " succeed.");
+    statusbar->showMessage("open " + ui->comboBox_Port->currentText() + " succeed.");
   }
   else
   {
     ui->pushButton_OpenPort->setChecked(false);
-    statusbar->showMessage("open " + SerialPort.portName() + " failed.");
+    statusbar->showMessage("open " + ui->comboBox_Port->currentText() + " failed.");
   }
 }
 
 bool SerialportAssistant::OpenPort(void)
 {
-  SerialPort.setPortName(ui->comboBox_Port->currentText().split(": ")[0]);
-  SerialPort.setBaudRate(ui->comboBox_Baudrate->currentText().toLong());
+  SERAILPORT_CONFIG_ST SerialportConfig;
+
+  SerialportConfig.portname = ui->comboBox_Port->currentText().split(": ")[0];
+  SerialportConfig.baudrate = ui->comboBox_Baudrate->currentText().toLong();
 
   QSerialPort::StopBits StopBits = QSerialPort::OneStop;
   if(1.5 == ui->comboBox_StopBit->currentText().toFloat())
@@ -97,7 +93,7 @@ bool SerialportAssistant::OpenPort(void)
   {
     StopBits = QSerialPort::TwoStop;
   }
-  SerialPort.setStopBits(StopBits);
+  SerialportConfig.stopbits = StopBits;
 
   QSerialPort::Parity Parity = QSerialPort::NoParity;
   if("奇" == ui->comboBox_CheckBit->currentText())
@@ -108,7 +104,7 @@ bool SerialportAssistant::OpenPort(void)
   {
     Parity = QSerialPort::EvenParity;
   }
-  SerialPort.setParity(Parity);
+  SerialportConfig.parity = Parity;
 
   QSerialPort::FlowControl FlowControl = QSerialPort::NoFlowControl;
   if("RTS/CTS" == ui->comboBox_FlowControl->currentText())
@@ -119,12 +115,9 @@ bool SerialportAssistant::OpenPort(void)
   {
     FlowControl = QSerialPort::SoftwareControl;
   }
-  SerialPort.setFlowControl(FlowControl);
+  SerialportConfig.flowcontrol = FlowControl;
 
-  qDebug() << SerialPort.baudRate() << SerialPort.stopBits()
-           << SerialPort.parity() << SerialPort.flowControl();
-
-  return SerialPort.open(QIODevice::ReadWrite);
+  return SerialportThread.open(&SerialportConfig);
 }
 
 void SerialportAssistant::slotUpdateSerialList(void)
@@ -134,40 +127,20 @@ void SerialportAssistant::slotUpdateSerialList(void)
     ui->comboBox_Port->addItem(Info.portName() + ": " + Info.description());
 }
 
-void SerialportAssistant::slotUpdateReceiveTexteditor(void)
+void SerialportAssistant::slotUpdateReceiveTexteditor(QByteArray data)
 {
   ui->textBrowser->moveCursor(QTextCursor::End);
-  ui->textBrowser->insertPlainText(QString::fromUtf8(recv_data));
-
-  emit signalDataReceived(recv_data);
-
-  listRecvData.append(recv_data);
-
-  /* 准备下次接收数据 */
-  ReadTimer.stop();
-  recv_data.clear();
+  ui->textBrowser->insertPlainText(QString::fromUtf8(data));
 }
 
-void SerialportAssistant::slotWriteData(void)
+
+void SerialportAssistant::slotSendInputBoxData(void)
 {
-  while(SerialPort.isOpen() && listWriteData.length())
+  if(SerialportThread.isOpen())
   {
-    QByteArray element_data = listWriteData.front();
-    SerialPort.write(element_data.constData(), element_data.size());
-    listWriteData.removeFirst();
+    QByteArray data = ui->plainTextEdit_Send->toPlainText().toUtf8();
+    SerialportThread.write(data.constData(), data.size());
   }
-}
-
-void SerialportAssistant::slotReadData(void)
-{
-  recv_data += SerialPort.readAll();
-  ReadTimer.start(5);
-}
-
-void SerialportAssistant::slotSendData(void)
-{
-  if(SerialPort.isOpen())
-    SerialPort.write(ui->plainTextEdit_Send->toPlainText().toUtf8());
 }
 
 void SerialportAssistant::slotClearReceivedData(void)
@@ -175,7 +148,7 @@ void SerialportAssistant::slotClearReceivedData(void)
   ui->textBrowser->clear();
 }
 
-void SerialportAssistant::slotClearSendData(void)
+void SerialportAssistant::slotClearInputBoxData(void)
 {
   ui->plainTextEdit_Send->clear();
 }

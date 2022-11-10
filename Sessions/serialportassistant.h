@@ -6,6 +6,8 @@
 #include <QStatusBar>
 #include <QTimer>
 
+#include "serialportthread.h"
+
 
 namespace Ui {
   class SerialportAssistant;
@@ -18,37 +20,28 @@ class SerialportAssistant : public QWidget
 public:
   explicit SerialportAssistant(QStatusBar *statusbar, QWidget *parent = nullptr);
   ~SerialportAssistant();
-  QList <QByteArray> listRecvData;
-  QList <QByteArray> listWriteData;
-  QSerialPort SerialPort;
+
+  serialportthread SerialportThread;
 
 private:
   QStatusBar *statusbar;
   Ui::SerialportAssistant *ui;
-
-  QTimer ReadTimer;
-  QTimer WriteTimer;
-
-  QByteArray recv_data;
 
   /* 串口操作函数 */
   bool OpenPort(void);
 
   void SignalSlotConnect(void);
 
-signals:
   void signalDataReceived(QByteArray &data);
+signals:
 
 private slots:
   void slotOpenPortButtonClicked(bool flag);
   void slotUpdateSerialList(void);
-  void slotReadData(void);
-  void slotSendData(void);
-  void slotUpdateReceiveTexteditor(void);
+  void slotSendInputBoxData(void);
+  void slotUpdateReceiveTexteditor(QByteArray data);
   void slotClearReceivedData(void);
-  void slotClearSendData(void);
-
-  void slotWriteData(void);
+  void slotClearInputBoxData(void);
 };
 
 #endif // SERIALPORTASSISTANT_H

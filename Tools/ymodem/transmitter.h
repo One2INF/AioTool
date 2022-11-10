@@ -5,7 +5,7 @@
 #include <QThread>
 
 #include "ymodem.h"
-#include "serialportassistant.h"
+#include "serialportthread.h"
 
 
 class transmitter : public QThread
@@ -13,7 +13,7 @@ class transmitter : public QThread
   Q_OBJECT
 
 public:
-  transmitter(SerialportAssistant *_SerialPort, QObject *parent = nullptr);
+  transmitter(serialportthread *_SerialPort, QObject *parent = nullptr);
   ~transmitter(void);
   void run(void);
   static size_t Read_Block(uint8_t *data, size_t size, uint32_t timeout);
@@ -33,8 +33,7 @@ private:
   bool QuitFlag = false;
   quint32 SendTimes;
 
-  static QByteArray ReceivedDatas;
-  static SerialportAssistant *SerialportAssistantHandle;
+  static serialportthread *SerialportHandle;
 
   void stop(void);
 };

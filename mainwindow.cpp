@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->tabWidget, &QTabWidget::tabCloseRequested,
           this, &MainWindow::slotCloseTabwidgetPage);
+
+  emit ui->actionYmodemSend->trigger();
 }
 
 MainWindow::~MainWindow()

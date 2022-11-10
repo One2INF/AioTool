@@ -3,15 +3,14 @@
 #include <QtSerialPort>
 #include <QDebug>
 
-#include "serialportassistant.h"
+#include "serialportthread.h"
 
 
-QByteArray transmitter::ReceivedDatas;
-SerialportAssistant* transmitter::SerialportAssistantHandle;
+serialportthread* transmitter::SerialportHandle;
 
-transmitter::transmitter(SerialportAssistant *serialport_assistant, QObject *parent) : QThread(parent)
+transmitter::transmitter(serialportthread *serialport, QObject *parent) : QThread(parent)
 {
-  SerialportAssistantHandle = serialport_assistant;
+  SerialportHandle = serialport;
 
   YMODE_DRIVER_ST YmodemDriver;
   YmodemDriver.read_block = Read_Block;
@@ -29,7 +28,7 @@ transmitter::~transmitter(void)
 
 void transmitter::Send(const QString file_name, const quint32 send_times)
 {
-  if(!SerialportAssistantHandle->SerialPort.isOpen())
+  if(!SerialportHandle->isOpen())
   {
     qDebug() << "port not open!";
     return;
@@ -37,40 +36,21 @@ void transmitter::Send(const QString file_name, const quint32 send_times)
 
   FileName = file_name;
   SendTimes = send_times;
-  SerialportAssistantHandle->listRecvData.clear();
-  SerialportAssistantHandle->listWriteData.clear();
 
   start();
 }
 
 size_t transmitter::Read_Block(uint8_t *data, size_t size, uint32_t timeout)
 {
-  timeout /= 10;
-  while(timeout--)
-  {
-    if(SerialportAssistantHandle->listRecvData.length())
-    {
-      QByteArray element_data = SerialportAssistantHandle->listRecvData.last();
-      if(size > element_data.size())
-        size = element_data.size();
-
-      memcpy(data, element_data.constData(), size);
-      SerialportAssistantHandle->listRecvData.clear();
-
-      return size;
-    }
-    msleep(10);
-  }
-
-  return 0;
+  size = SerialportHandle->read_block((char*)data, size, timeout);
+  qDebug() << "Ymode read:" << QByteArray((char*)data, size);
+  return size;
 }
 
 size_t transmitter::Write(const uint8_t *data, size_t size)
 {
-  QByteArray element_data((char *)data, size);
-  SerialportAssistantHandle->listWriteData.append(element_data);
-
-  return size;
+  qDebug() << "Ymode write:" << data[0] << data[1];
+  return SerialportHandle->write((const char*)data, size);
 }
 
 YMODEM_STATUS_EN transmitter::receive_data_handler(size_t packet_offset, const uint8_t *data, size_t size)
@@ -99,7 +79,6 @@ void transmitter::run(void)
   FileInfo.size = file.size();
   qDebug() << FileInfo.name << FileInfo.size << SendTimes;
   QByteArray data = file.readAll();
-  qDebug() << "data" << data.constData();
 
   while(SendTimes--)
   {
