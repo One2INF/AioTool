@@ -5,13 +5,7 @@
 #include <QThread>
 
 #include "ymodem.h"
-
-
-typedef struct
-{
-  QString portname;
-  qint32 baudrate;
-}SERIALPORT_INFO_ST;
+#include "serialportassistant.h"
 
 
 class transmitter : public QThread
@@ -19,23 +13,28 @@ class transmitter : public QThread
   Q_OBJECT
 
 public:
-  transmitter(QObject *parent = nullptr);
+  transmitter(SerialportAssistant *_SerialPort, QObject *parent = nullptr);
   ~transmitter(void);
-  void init(SERIALPORT_INFO_ST *serialport_info, FILE_INFO_ST *file_info);
   void run(void);
   static size_t Read_Block(uint8_t *data, size_t size, uint32_t timeout);
   static size_t Write(const uint8_t *data, size_t size);
   static YMODEM_STATUS_EN receive_data_handler(size_t packet_offset, const uint8_t *data, size_t size);
-  static QSerialPort SerialPort;
+
+  void Send(const QString file_name, const quint32 send_times);
 
 signals:
   void UpdateText(QString text);
+  void signalWriteData(const char *data, qint64 len);
 
 private:
-  SERIALPORT_INFO_ST SerialportInfo;
+  QString FileName;
   FILE_INFO_ST FileInfo;
   YMODEM_HANDLER Ymodem;
   bool QuitFlag = false;
+  quint32 SendTimes;
+
+  static QByteArray ReceivedDatas;
+  static SerialportAssistant *SerialportAssistantHandle;
 
   void stop(void);
 };

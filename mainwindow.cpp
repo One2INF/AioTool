@@ -5,6 +5,7 @@
 #include <QMessageBox>
 
 #include "newsessiondialog.h"
+#include "ymodemwidget.h"
 #include "serialportassistant.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,10 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
 
+  /* TODO：默认使用串口会话 */
   ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
 
   connect(ui->actionNewSession, &QAction::triggered,
           this, &MainWindow::slotNewSession);
+
+  connect(ui->actionYmodemSend, &QAction::triggered,
+          this, &MainWindow::slotYmodem);
 
   connect(ui->actionAboutMe, &QAction::triggered,
           this, &MainWindow::slotAboutMe);
@@ -36,9 +41,15 @@ void MainWindow::slotNewSession(void)
   {
     int index = ui->tabWidget->addTab(new SerialportAssistant(ui->statusbar, ui->tabWidget), "串口调试助手");
     ui->tabWidget->setCurrentIndex(index);
-
     ui->statusbar->showMessage("session type: " + NewSession.SessionType());
   }
+}
+
+void MainWindow::slotYmodem(void)
+{
+  YmodemWidget *YmodemDockWidget = new YmodemWidget(ui->tabWidget->currentWidget());
+  YmodemDockWidget->setWindowTitle("Ymodem-" + ui->tabWidget->tabText(ui->tabWidget->currentIndex()));
+  addDockWidget(Qt::RightDockWidgetArea, YmodemDockWidget);
 }
 
 void MainWindow::slotCloseTabwidgetPage(int index)

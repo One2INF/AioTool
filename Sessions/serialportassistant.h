@@ -18,15 +18,17 @@ class SerialportAssistant : public QWidget
 public:
   explicit SerialportAssistant(QStatusBar *statusbar, QWidget *parent = nullptr);
   ~SerialportAssistant();
-
-public slots:
+  QList <QByteArray> listRecvData;
+  QList <QByteArray> listWriteData;
+  QSerialPort SerialPort;
 
 private:
   QStatusBar *statusbar;
-  QSerialPort SerialPort;
   Ui::SerialportAssistant *ui;
 
-  QTimer timer;
+  QTimer ReadTimer;
+  QTimer WriteTimer;
+
   QByteArray recv_data;
 
   /* 串口操作函数 */
@@ -34,8 +36,10 @@ private:
 
   void SignalSlotConnect(void);
 
-private slots:
+signals:
+  void signalDataReceived(QByteArray &data);
 
+private slots:
   void slotOpenPortButtonClicked(bool flag);
   void slotUpdateSerialList(void);
   void slotReadData(void);
@@ -43,6 +47,8 @@ private slots:
   void slotUpdateReceiveTexteditor(void);
   void slotClearReceivedData(void);
   void slotClearSendData(void);
+
+  void slotWriteData(void);
 };
 
 #endif // SERIALPORTASSISTANT_H

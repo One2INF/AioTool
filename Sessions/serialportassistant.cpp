@@ -18,6 +18,8 @@ SerialportAssistant::SerialportAssistant(QStatusBar *status_bar, QWidget *parent
   /* 设置按钮不自复位 */
   ui->pushButton_OpenPort->setCheckable(true);
 
+  WriteTimer.start(10);
+
   SignalSlotConnect();
   slotUpdateSerialList();
 }
@@ -52,7 +54,8 @@ void SerialportAssistant::SignalSlotConnect(void)
   connect(&SerialPort, &QSerialPort::readyRead,
           this, &SerialportAssistant::slotReadData);
 
-  connect(&timer, &QTimer::timeout, this, &SerialportAssistant::slotUpdateReceiveTexteditor);
+  connect(&ReadTimer, &QTimer::timeout, this, &SerialportAssistant::slotUpdateReceiveTexteditor);
+  connect(&WriteTimer, &QTimer::timeout, this, &SerialportAssistant::slotWriteData);
 }
 
 void SerialportAssistant::slotOpenPortButtonClicked(bool flag)
@@ -136,15 +139,29 @@ void SerialportAssistant::slotUpdateReceiveTexteditor(void)
   ui->textBrowser->moveCursor(QTextCursor::End);
   ui->textBrowser->insertPlainText(QString::fromUtf8(recv_data));
 
+  emit signalDataReceived(recv_data);
+
+  listRecvData.append(recv_data);
+
   /* 准备下次接收数据 */
-  timer.stop();
+  ReadTimer.stop();
   recv_data.clear();
+}
+
+void SerialportAssistant::slotWriteData(void)
+{
+  while(SerialPort.isOpen() && listWriteData.length())
+  {
+    QByteArray element_data = listWriteData.front();
+    SerialPort.write(element_data.constData(), element_data.size());
+    listWriteData.removeFirst();
+  }
 }
 
 void SerialportAssistant::slotReadData(void)
 {
   recv_data += SerialPort.readAll();
-  timer.start(5);
+  ReadTimer.start(5);
 }
 
 void SerialportAssistant::slotSendData(void)

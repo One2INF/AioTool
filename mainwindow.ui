@@ -62,8 +62,9 @@
     <property name="title">
      <string>tools</string>
     </property>
-    <addaction name="actionYmodem"/>
+    <addaction name="actionYmodemSend"/>
     <addaction name="actionSerialPlot"/>
+    <addaction name="actionHexEditor"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menutools"/>
@@ -84,14 +85,19 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionYmodem">
+  <action name="actionYmodemSend">
    <property name="text">
-    <string>Ymodem</string>
+    <string>Ymodem Send...</string>
    </property>
   </action>
   <action name="actionSerialPlot">
    <property name="text">
     <string>SerialPlot</string>
+   </property>
+  </action>
+  <action name="actionHexEditor">
+   <property name="text">
+    <string>HexEditor</string>
    </property>
   </action>
  </widget>

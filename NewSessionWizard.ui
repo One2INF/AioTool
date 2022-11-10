@@ -49,11 +49,6 @@ hr { height: 1px; border-width: 0; }
            <string>NeworkAssistant</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>SerialPlot</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>

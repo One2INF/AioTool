@@ -18,6 +18,7 @@ public:
 
 public slots:
   void slotNewSession(void);
+  void slotYmodem(void);
   void slotAboutMe(void);
 
 private:
